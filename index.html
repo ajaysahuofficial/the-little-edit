@@ -1,30 +1,452 @@
 
-<div class="modal" id="customModal">
-  <div class="modal-box">
-    <span class="close" onclick="closeModal('customModal')">×</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Little Edit | Customize Your Gift</title>
 
-    <h2>Customize Your Gift 🎁</h2>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <input id="customName" placeholder="Your Full Name">
-    <input id="customPhone" placeholder="Mobile Number">
-    <input id="customEmail" type="email" placeholder="Email Address">
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    <input id="customProduct" placeholder="Select Gift Product">
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #fffaf7;
+  color: #292323;
+}
 
-    <input id="printName" placeholder="Name to Print (Optional)">
+header {
+  background: white;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
 
-    <textarea id="customMessage"
-      placeholder="Write Your Personal Message"></textarea>
+header h1 {
+  margin: 0;
+  font-size: 27px;
+  color: #a44c62;
+}
 
-    <label>Upload Your Photo</label>
-    <input id="customImage" type="file"
-      accept="image/png,image/jpeg,image/webp">
+header p {
+  color: #777;
+  margin-bottom: 0;
+}
 
-    <button class="primary-button"
-      onclick="submitCustomization()">
-      Submit Custom Order
-    </button>
+.container {
+  max-width: 650px;
+  margin: 35px auto;
+  padding: 25px;
+}
 
-    <p><small>Upload one image, maximum 5 MB.</small></p>
-  </div>
+.modal-box {
+  background: white;
+  padding: 28px;
+  border-radius: 15px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.07);
+}
+
+h2 {
+  text-align: center;
+  color: #a44c62;
+  margin-top: 0;
+}
+
+.description {
+  text-align: center;
+  color: #777;
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin: 17px 0 7px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+  font-family: inherit;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+input:focus, textarea:focus {
+  outline: 1px solid #b65b73;
+  border-color: #b65b73;
+}
+
+input[type="file"] {
+  background: #fff8fa;
+  padding: 12px;
+}
+
+.hint {
+  font-size: 12px;
+  color: #777;
+  margin-top: 6px;
+}
+
+.primary-button {
+  width: 100%;
+  margin-top: 25px;
+  padding: 15px;
+  background: #a44c62;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#formStatus {
+  text-align: center;
+  margin-top: 18px;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+  font-size: 13px;
+}
+
+@media(max-width:600px) {
+  .container {
+    padding: 12px;
+    margin: 20px auto;
+  }
+
+  .modal-box {
+    padding: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>The Little Edit 🎁</h1>
+  <p>Make Your Gifts Personal</p>
+</header>
+
+<main class="container">
+<div class="modal-box">
+
+<h2>Customize Your Gift 🎁</h2>
+
+<p class="description">
+Create a special gift with your own photos,
+personalized name and beautiful messages.
+</p>
+
+<form id="customOrderForm">
+
+<label>Full Name *</label>
+<input
+  type="text"
+  id="customName"
+  placeholder="Your Full Name"
+  maxlength="100"
+  required
+>
+
+<label>Mobile Number *</label>
+<input
+  type="tel"
+  id="customPhone"
+  placeholder="10 digit mobile number"
+  pattern="[6-9][0-9]{9}"
+  maxlength="10"
+  required
+>
+
+<label>Email Address</label>
+<input
+  type="email"
+  id="customEmail"
+  placeholder="Your Email Address"
+>
+
+<label>Select Gift Product *</label>
+<input
+  type="text"
+  id="customProduct"
+  placeholder="Example: Customized Photo Frame"
+  maxlength="150"
+  required
+>
+
+<label>Name to Print (Optional)</label>
+<input
+  type="text"
+  id="printName"
+  placeholder="Name to print on your gift"
+  maxlength="100"
+>
+
+<label>Your Personal Message</label>
+<textarea
+  id="customMessage"
+  maxlength="1000"
+  placeholder="Write your special message here..."
+></textarea>
+
+<label>Upload Your Photos</label>
+<input
+  type="file"
+  id="customImage"
+  accept="image/png,image/jpeg,image/webp"
+  multiple
+>
+
+<p class="hint">
+Upload up to 5 images. Maximum 5 MB per image.
+Supported formats: JPG, PNG and WEBP.
+</p>
+
+<hr style="margin:25px 0;border:0;border-top:1px solid #eee;">
+
+<h2>Delivery Details 📦</h2>
+
+<label>House / Flat Number, Street and Area *</label>
+<textarea
+  id="addressLine"
+  placeholder="Enter complete delivery address"
+  maxlength="500"
+  required
+></textarea>
+
+<label>City *</label>
+<input
+  type="text"
+  id="city"
+  placeholder="Your City"
+  required
+>
+
+<label>State *</label>
+<input
+  type="text"
+  id="state"
+  placeholder="Your State"
+  required
+>
+
+<label>PIN Code *</label>
+<input
+  type="text"
+  id="pincode"
+  placeholder="6 digit PIN Code"
+  pattern="[0-9]{6}"
+  maxlength="6"
+  required
+>
+
+<label>Landmark (Optional)</label>
+<input
+  type="text"
+  id="landmark"
+  placeholder="Nearby landmark"
+  maxlength="200"
+>
+
+<button
+  type="submit"
+  class="primary-button"
+  id="submitButton"
+>
+Submit Custom Order 🎁
+</button>
+
+<p id="formStatus" role="status" aria-live="polite"></p>
+
+</form>
 </div>
+</main>
+
+<footer>
+© 2026 The Little Edit. All Rights Reserved.
+</footer>
+
+<script>
+// ====================================
+// SUPABASE CONNECTION
+// ====================================
+
+const SUPABASE_URL =
+"https://jnekoazooahqlzliahpc.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_mjx0sDSTOt6KoZvshBokhw_7XVI7efM";
+
+const client = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+// ====================================
+// CUSTOM ORDER SUBMISSION
+// ====================================
+
+const form = document.getElementById("customOrderForm");
+
+form.addEventListener("submit", async function(event) {
+
+  event.preventDefault();
+
+  const button = document.getElementById("submitButton");
+  const status = document.getElementById("formStatus");
+
+  button.disabled = true;
+  button.textContent = "Submitting Order...";
+  status.style.color = "#555";
+  status.textContent = "Please wait, uploading your details and photos...";
+
+  try {
+
+    const name = document.getElementById("customName").value.trim();
+    const phone = document.getElementById("customPhone").value.trim();
+    const email = document.getElementById("customEmail").value.trim();
+    const product = document.getElementById("customProduct").value.trim();
+    const printName = document.getElementById("printName").value.trim();
+    const message = document.getElementById("customMessage").value.trim();
+
+    const address = document.getElementById("addressLine").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const state = document.getElementById("state").value.trim();
+    const pincode = document.getElementById("pincode").value.trim();
+    const landmark = document.getElementById("landmark").value.trim();
+
+    const fileInput = document.getElementById("customImage");
+    const files = Array.from(fileInput.files);
+
+    // Validate mobile and PIN
+    if (!/^[6-9][0-9]{9}$/.test(phone)) {
+      throw new Error("Please enter a valid 10 digit mobile number.");
+    }
+
+    if (!/^[0-9]{6}$/.test(pincode)) {
+      throw new Error("Please enter a valid 6 digit PIN code.");
+    }
+
+    // Validate images
+    if (files.length > 5) {
+      throw new Error("You can upload maximum 5 images.");
+    }
+
+    for (const file of files) {
+
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        throw new Error("Only JPG, PNG and WEBP images are allowed.");
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Each image must be below 5 MB.");
+      }
+    }
+
+    // Unique order ID
+    const orderId = crypto.randomUUID();
+
+    // Upload customer images
+    const uploadedPaths = [];
+
+    for (const file of files) {
+
+      const safeName = file.name
+        .replace(/[^a-zA-Z0-9._-]/g, "_");
+
+      const filePath =
+        orderId + "/" + Date.now() + "-" + safeName;
+
+      const { data, error } = await client
+        .storage
+        .from("gift-uploads")
+        .upload(filePath, file, {
+          contentType: file.type,
+          upsert: false
+        });
+
+      if (error) {
+        throw new Error("Photo upload failed: " + error.message);
+      }
+
+      uploadedPaths.push(data.path);
+    }
+
+    // Save customer order
+    const { error: orderError } = await client
+      .from("custom_orders")
+      .insert({
+        order_id: orderId,
+        full_name: name,
+        phone: phone,
+        email: email || null,
+        product_name: product,
+        print_name: printName || null,
+        message: message || null,
+        address_line: address,
+        city: city,
+        state: state,
+        pincode: pincode,
+        landmark: landmark || null,
+        image_paths: uploadedPaths,
+        status: "New"
+      });
+
+    if (orderError) {
+      throw new Error("Order saving failed: " + orderError.message);
+    }
+
+    // Success
+    status.style.color = "green";
+
+    status.textContent =
+      "Your custom order has been submitted successfully! Order ID: " + orderId;
+
+    form.reset();
+
+  } catch (error) {
+
+    console.error("Custom order error:", error);
+
+    status.style.color = "red";
+    status.textContent = error.message || "Something went wrong. Please try again.";
+
+  } finally {
+
+    button.disabled = false;
+    button.textContent = "Submit Custom Order 🎁";
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
