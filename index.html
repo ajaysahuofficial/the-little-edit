@@ -4,449 +4,598 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Little Edit | Customize Your Gift</title>
-
+<meta name="theme-color" content="#f8eee9">
+<title>The Little Edit | Gifts Made Personal</title>
+<meta name="description" content="Personalized photo mugs, LED frames, lamps and name keychains. Make every little gift feel special.">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
-* {
-  box-sizing: border-box;
+:root{--ink:#30262b;--muted:#776a70;--berry:#a83f63;--berry2:#7d2d4a;--line:#eadbd5}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;color:var(--ink);font-family:"DM Sans",Arial,sans-serif;background:radial-gradient(ellipse at 8% 15%,#f8dcd4 0,transparent 27%),radial-gradient(ellipse at 92% 38%,#e8def2 0,transparent 24%),linear-gradient(135deg,#fff8f1,#f8eee9 55%,#f4eaf1);background-attachment:fixed;line-height:1.45}
+a{text-decoration:none;color:inherit}
+button,input,textarea{font:inherit}
+.topline{background:#38252e;color:#fff;text-align:center;padding:8px 12px;font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+.header{position:sticky;top:0;z-index:30;background:#fff9f2ef;backdrop-filter:blur(14px);border-bottom:1px solid #eadbd5}
+.nav{max-width:1200px;margin:auto;padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.logo{font:700 27px "Playfair Display",serif;color:var(--berry);letter-spacing:-1px}
+.logo span{color:#392a30}
+.links{display:flex;align-items:center;gap:25px;font-size:12px;font-weight:700}
+.links a:hover{color:var(--berry)}
+.nav-btn,.btn{border:0;background:var(--berry);color:#fff;padding:13px 20px;border-radius:30px;font-weight:800;font-size:11px;letter-spacing:.07em;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.25s;box-shadow:0 8px 18px #a83f632b}
+.nav-btn:hover,.btn:hover{background:var(--berry2);transform:translateY(-3px);box-shadow:0 12px 22px #a83f6340}
+.menu{display:none;background:none;border:0;font-size:24px}
+.hero{max-width:1200px;margin:auto;padding:55px 24px 70px;display:grid;grid-template-columns:.92fr 1.08fr;align-items:center;gap:25px;min-height:570px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:#fff9;padding:8px 13px;border:1px solid #fff;border-radius:30px;color:var(--berry);font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.hero h1{font:600 clamp(43px,5.4vw,70px)/1.02 "Playfair Display",Georgia,serif;letter-spacing:-2px;margin:19px 0 16px;max-width:560px}
+.hero h1 em{color:var(--berry);font-style:normal}
+.hero p{color:#6d5d63;max-width:420px;font-size:14px;margin:0 0 24px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn.light{background:#fff;color:var(--berry);box-shadow:none;border:1px solid #e7cbd2}
+.hero-small{font-size:11px;color:#8a747c;margin-top:18px}
+.hero-visual{height:455px;position:relative}
+.hero-main{position:absolute;width:64%;height:90%;right:6%;top:1%;object-fit:cover;border-radius:48% 48% 18px 18px;box-shadow:0 25px 60px #6d3e4526}
+.hero-float{position:absolute;object-fit:cover;border:8px solid #fff;border-radius:18px;box-shadow:0 15px 35px #51303b30;animation:float 5s ease-in-out infinite}
+.hero-float.one{width:37%;height:42%;left:0;top:12%;transform:rotate(-8deg)}
+.hero-float.two{width:38%;height:38%;left:8%;bottom:0;transform:rotate(7deg);animation-delay:-2s}
+.round-note{position:absolute;right:0;bottom:7%;background:#fff2cf;color:#76502e;width:112px;height:112px;border-radius:50%;display:grid;place-content:center;text-align:center;font:600 16px "Playfair Display";line-height:1.15;transform:rotate(9deg);box-shadow:0 12px 28px #4d30201c}
+.spark{position:absolute;color:var(--berry);font-size:30px;animation:pulse 2s infinite}
+.spark.s1{top:4%;left:16%}
+.spark.s2{right:1%;top:16%;animation-delay:.7s}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -12px}}
+@keyframes pulse{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.25) rotate(18deg)}}
+.ticker{background:#8e3857;color:#fff;overflow:hidden;white-space:nowrap;padding:12px 0;font-size:11px;font-weight:800;letter-spacing:.14em}
+.ticker div{display:inline-block;min-width:200%;animation:marquee 25s linear infinite}
+.ticker span{margin:0 28px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.section{max-width:1200px;margin:auto;padding:72px 24px}
+.section-head{text-align:center;margin:0 auto 30px}
+.section-head .eyebrow{background:#fff;border-color:#f0ded8}
+.section-head h2{font:600 clamp(30px,4vw,45px) "Playfair Display",serif;margin:12px 0 7px}
+.section-head p{font-size:13px;color:var(--muted);margin:0}
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:19px}
+.product{position:relative;border-radius:17px;overflow:hidden;background:#fff;box-shadow:0 10px 28px #52333b12;transition:.3s}
+.product:hover{transform:translateY(-7px);box-shadow:0 18px 38px #52333b20}
+.product-img{height:275px;position:relative;overflow:hidden;background:#eadbd5}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform .55s}
+.product:hover .product-img img{transform:scale(1.08)}
+.pill{position:absolute;top:13px;left:13px;background:#fff;color:var(--berry);border-radius:30px;padding:6px 10px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.product-info{padding:16px 17px 18px}
+.product-info h3{font:600 20px "Playfair Display",serif;margin:0 0 4px}
+.product-info p{font-size:11px;color:var(--muted);margin:0 0 13px}
+.product-foot{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.price{font-size:11px;color:var(--berry);font-weight:800}
+.mini-btn{border:0;border-radius:25px;background:#f6e5e9;color:var(--berry);padding:9px 13px;font-size:10px;font-weight:800;cursor:pointer}
+.mini-btn:hover{background:var(--berry);color:#fff}
+.feature{max-width:1200px;margin:0 auto 65px;padding:0 24px}
+.feature-inner{display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(120deg,#e9dff0,#f8dcd2);border-radius:25px;overflow:hidden;min-height:330px}
+.feature-pics{position:relative;min-height:330px}
+.feature-pics img{position:absolute;object-fit:cover;border:7px solid white;box-shadow:0 14px 30px #53313b25}
+.feature-pics img:first-child{width:57%;height:78%;left:8%;top:10%;border-radius:15px;transform:rotate(-5deg)}
+.feature-pics img:last-child{width:42%;height:58%;right:5%;bottom:7%;border-radius:15px;transform:rotate(7deg)}
+.feature-copy{padding:55px 9%;align-self:center}
+.feature-copy h2{font:600 39px/1.1 "Playfair Display";margin:14px 0}
+.feature-copy p{font-size:13px;color:#6f5b65;max-width:390px;margin-bottom:20px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.step{background:#fff9;border:1px solid #fff;border-radius:17px;text-align:center;padding:25px 17px;box-shadow:0 8px 25px #50303b0b}
+.step-icon{width:62px;height:62px;margin:0 auto 13px;border-radius:20px;background:#f5e2e6;display:grid;place-items:center;font-size:28px}
+.step h3{font:600 20px "Playfair Display";margin:0 0 5px}
+.step p{font-size:11px;color:var(--muted);margin:0}
+.about-band{background:#fff9;padding:45px 24px}
+.about-inner{max-width:850px;margin:auto;text-align:center}
+.about-inner h2{font:600 35px "Playfair Display";margin:10px}
+.about-inner p{font-size:13px;color:var(--muted);margin:0}
+.review{max-width:1200px;margin:auto;padding:50px 24px 70px}
+.review-card{background:#fff;border-radius:20px;padding:27px;text-align:center;max-width:680px;margin:auto;box-shadow:0 10px 30px #52333b10}
+.stars{color:#d59a45;letter-spacing:5px;font-size:20px}
+.review-card h2{font:600 29px "Playfair Display";margin:6px}
+.review-card p{font-size:12px;color:var(--muted);margin:0}
+.contact{background:#38272e;color:white}
+.contact-inner{max-width:1200px;margin:auto;padding:38px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.contact h2{font:600 30px "Playfair Display";margin:0 0 5px}
+.contact p{font-size:12px;color:#dfcbd2;margin:0}
+.contact-info{display:flex;gap:28px;flex-wrap:wrap;font-size:12px}
+.contact-info b{display:block;color:#efb8c8;font-size:9px;letter-spacing:.13em;text-transform:uppercase}
+.footer{text-align:center;background:#291e23;color:#cdbdc3;padding:16px;font-size:10px}
+.footer a{margin:0 9px}
+.modal{display:none;position:fixed;inset:0;background:#20161bb5;z-index:60;padding:15px;overflow:auto}
+.modal.open{display:flex;align-items:flex-start;justify-content:center}
+.panel{background:#fffaf6;border-radius:18px;width:min(650px,100%);margin:auto;padding:25px;position:relative;box-shadow:0 25px 80px #0004}
+.close{position:absolute;right:17px;top:10px;border:0;background:none;font-size:29px;cursor:pointer}
+.panel h2{font:600 28px "Playfair Display";margin:0 35px 4px 0}
+.sub{font-size:11px;color:var(--muted);margin:0 0 13px}
+.selected{display:flex;align-items:center;gap:12px;background:#f4e6e8;padding:9px;border-radius:10px;margin:12px 0}
+.selected img{width:60px;height:60px;object-fit:cover;border-radius:8px}
+.selected strong{font:600 18px "Playfair Display";display:block}
+.selected span{font-size:10px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.field.full{grid-column:1/-1}
+.field label{display:block;font-size:11px;font-weight:800;margin:11px 0 5px}
+.field input,.field textarea{width:100%;border:1px solid #e3d2d0;border-radius:8px;background:white;padding:11px;font-size:12px}
+.field textarea{min-height:68px;resize:vertical}
+.hint{font-size:10px;color:var(--muted);margin:5px 0}
+.divider{border:0;border-top:1px solid var(--line);margin:16px 0 7px}
+.submit{width:100%;margin-top:15px}
+.status{text-align:center;font-size:12px;min-height:18px}
+.status.error{color:#b42318}
+.status.success{color:#287348}
+.hidden{display:none!important}
+
+@media(max-width:850px){
+.hero{grid-template-columns:1fr 1fr;gap:5px}
+.hero-visual{height:380px}
+.hero-main{height:85%}
+.product-img{height:225px}
+.categories{gap:13px}
 }
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #fffaf7;
-  color: #292323;
-}
-
-header {
-  background: white;
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid #eee;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 27px;
-  color: #a44c62;
-}
-
-header p {
-  color: #777;
-  margin-bottom: 0;
-}
-
-.container {
-  max-width: 650px;
-  margin: 35px auto;
-  padding: 25px;
-}
-
-.modal-box {
-  background: white;
-  padding: 28px;
-  border-radius: 15px;
-  box-shadow: 0 4px 25px rgba(0,0,0,0.07);
-}
-
-h2 {
-  text-align: center;
-  color: #a44c62;
-  margin-top: 0;
-}
-
-.description {
-  text-align: center;
-  color: #777;
-  line-height: 1.5;
-  margin-bottom: 25px;
-}
-
-label {
-  display: block;
-  font-weight: 600;
-  margin: 17px 0 7px;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  background: #fff;
-  font-family: inherit;
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-input:focus, textarea:focus {
-  outline: 1px solid #b65b73;
-  border-color: #b65b73;
-}
-
-input[type="file"] {
-  background: #fff8fa;
-  padding: 12px;
-}
-
-.hint {
-  font-size: 12px;
-  color: #777;
-  margin-top: 6px;
-}
-
-.primary-button {
-  width: 100%;
-  margin-top: 25px;
-  padding: 15px;
-  background: #a44c62;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.primary-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-#formStatus {
-  text-align: center;
-  margin-top: 18px;
-  font-weight: bold;
-  line-height: 1.5;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  color: #888;
-  font-size: 13px;
-}
-
-@media(max-width:600px) {
-  .container {
-    padding: 12px;
-    margin: 20px auto;
-  }
-
-  .modal-box {
-    padding: 20px;
-  }
+@media(max-width:620px){
+.nav{padding:11px 17px}
+.menu{display:block}
+.links{display:none;position:absolute;top:60px;left:0;right:0;background:#fff9f2;padding:18px 22px;flex-direction:column;align-items:flex-start;border-bottom:1px solid var(--line)}
+.links.show{display:flex}
+.nav-btn{display:none}
+.hero{grid-template-columns:1fr;padding:38px 19px 35px;gap:12px}
+.hero h1{font-size:48px}
+.hero-visual{height:330px;margin:5px 4px 0}
+.hero-main{height:90%;width:65%}
+.hero-float.one{height:39%}
+.hero-float.two{height:34%}
+.round-note{width:88px;height:88px;font-size:13px}
+.section{padding:53px 16px}
+.categories{grid-template-columns:1fr 1fr;gap:12px}
+.product-img{height:185px}
+.product-info{padding:12px}
+.product-info h3{font-size:17px}
+.product-info p{font-size:10px;min-height:40px}
+.product-foot{align-items:flex-start;flex-direction:column}
+.mini-btn{width:100%}
+.feature{padding:0 15px;margin-bottom:45px}
+.feature-inner{grid-template-columns:1fr}
+.feature-pics{min-height:245px}
+.feature-copy{padding:23px 24px 30px}
+.feature-copy h2{font-size:32px}
+.steps{grid-template-columns:1fr;gap:11px}
+.step{display:flex;text-align:left;align-items:center;gap:15px;padding:15px}
+.step-icon{flex:0 0 52px;width:52px;height:52px;margin:0}
+.step h3{font-size:18px}
+.contact-inner{display:block;padding:30px 19px}
+.contact-info{margin-top:18px;gap:17px}
+.grid{grid-template-columns:1fr}
+.field.full{grid-column:auto}
+.panel{padding:21px 16px}
+.section-head h2{font-size:34px}
 }
 </style>
 </head>
 
 <body>
+<div class="topline">✦ A little something, made just for you ✦</div>
 
-<header>
-  <h1>The Little Edit 🎁</h1>
-  <p>Make Your Gifts Personal</p>
+<header class="header">
+<div class="nav">
+<a class="logo" href="#home">the little edit<span> ✿</span></a>
+<button class="menu" id="menuToggle" aria-label="Open menu">☰</button>
+<nav class="links" id="navLinks">
+<a href="#shop">SHOP</a>
+<a href="#how">HOW IT WORKS</a>
+<a href="#about">OUR STORY</a>
+<a href="#contact">CONTACT</a>
+</nav>
+<a class="nav-btn" href="#shop">FIND A GIFT ↗</a>
+</div>
 </header>
 
-<main class="container">
-<div class="modal-box">
-
-<h2>Customize Your Gift 🎁</h2>
-
-<p class="description">
-Create a special gift with your own photos,
-personalized name and beautiful messages.
-</p>
-
-<form id="customOrderForm">
-
-<label>Full Name *</label>
-<input
-  type="text"
-  id="customName"
-  placeholder="Your Full Name"
-  maxlength="100"
-  required
->
-
-<label>Mobile Number *</label>
-<input
-  type="tel"
-  id="customPhone"
-  placeholder="10 digit mobile number"
-  pattern="[6-9][0-9]{9}"
-  maxlength="10"
-  required
->
-
-<label>Email Address</label>
-<input
-  type="email"
-  id="customEmail"
-  placeholder="Your Email Address"
->
-
-<label>Select Gift Product *</label>
-<input
-  type="text"
-  id="customProduct"
-  placeholder="Example: Customized Photo Frame"
-  maxlength="150"
-  required
->
-
-<label>Name to Print (Optional)</label>
-<input
-  type="text"
-  id="printName"
-  placeholder="Name to print on your gift"
-  maxlength="100"
->
-
-<label>Your Personal Message</label>
-<textarea
-  id="customMessage"
-  maxlength="1000"
-  placeholder="Write your special message here..."
-></textarea>
-
-<label>Upload Your Photos</label>
-<input
-  type="file"
-  id="customImage"
-  accept="image/png,image/jpeg,image/webp"
-  multiple
->
-
-<p class="hint">
-Upload up to 5 images. Maximum 5 MB per image.
-Supported formats: JPG, PNG and WEBP.
-</p>
-
-<hr style="margin:25px 0;border:0;border-top:1px solid #eee;">
-
-<h2>Delivery Details 📦</h2>
-
-<label>House / Flat Number, Street and Area *</label>
-<textarea
-  id="addressLine"
-  placeholder="Enter complete delivery address"
-  maxlength="500"
-  required
-></textarea>
-
-<label>City *</label>
-<input
-  type="text"
-  id="city"
-  placeholder="Your City"
-  required
->
-
-<label>State *</label>
-<input
-  type="text"
-  id="state"
-  placeholder="Your State"
-  required
->
-
-<label>PIN Code *</label>
-<input
-  type="text"
-  id="pincode"
-  placeholder="6 digit PIN Code"
-  pattern="[0-9]{6}"
-  maxlength="6"
-  required
->
-
-<label>Landmark (Optional)</label>
-<input
-  type="text"
-  id="landmark"
-  placeholder="Nearby landmark"
-  maxlength="200"
->
-
-<button
-  type="submit"
-  class="primary-button"
-  id="submitButton"
->
-Submit Custom Order 🎁
-</button>
-
-<p id="formStatus" role="status" aria-live="polite"></p>
-
-</form>
+<main id="home">
+<section class="hero">
+<div>
+<span class="eyebrow">✿ Gifts with a personal touch</span>
+<h1>Make it personal.<br><em>Make it memorable.</em></h1>
+<p>Your photos, their names, your favourite little moments — turned into gifts made to keep.</p>
+<div class="hero-actions">
+<a class="btn" href="#shop">SHOP PERSONALIZED GIFTS ↗</a>
+<a class="btn light" href="#how">HOW IT WORKS</a>
 </div>
+<div class="hero-small">♡ Thoughtful details • Made just for them</div>
+</div>
+
+<div class="hero-visual">
+<img class="hero-main" src="https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=1000&q=85" alt="Beautifully wrapped gift boxes">
+<img class="hero-float one" src="https://images.unsplash.com/photo-1514228742587-6b1558f1a1?auto=format&fit=crop&w=600&q=85" alt="Coffee mug gift">
+<img class="hero-float two" src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=85" alt="Gift wrapping details">
+<div class="round-note">made with<br><b>love ♡</b></div>
+<span class="spark s1">✳</span>
+<span class="spark s2">✦</span>
+</div>
+</section>
+
+<div class="ticker"><div>
+<span>PERSONALIZED WITH LOVE ✿</span>
+<span>YOUR PHOTO, YOUR STORY ✿</span>
+<span>GIFTS THAT FEEL LIKE YOU ✿</span>
+<span>PERSONALIZED WITH LOVE ✿</span>
+<span>YOUR PHOTO, YOUR STORY ✿</span>
+<span>GIFTS THAT FEEL LIKE YOU ✿</span>
+</div></div>
+
+<section class="section" id="shop">
+<div class="section-head">
+<span class="eyebrow">THE GIFT COLLECTION</span>
+<h2>Pick your little favourite</h2>
+<p>Tap a product to make it yours ♡</p>
+</div>
+
+<div class="categories">
+<article class="product">
+<div class="product-img">
+<span class="pill">Photo favourite</span>
+<img src="https://images.unsplash.com/photo-1514228742587-6b1558f1a1?auto=format&fit=crop&w=800&q=85" alt="Ceramic coffee mug">
+</div>
+<div class="product-info">
+<h3>Photo Mug</h3>
+<p>Your favourite face, on their favourite mug.</p>
+<div class="product-foot">
+<span class="price">CUSTOM MADE</span>
+<button class="mini-btn" onclick="openOrder('Personalized Photo Mug','photo',this)">MAKE IT YOURS ↗</button>
+</div>
+</div>
+</article>
+
+<article class="product">
+<div class="product-img">
+<span class="pill">Memory glow</span>
+<img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=85" alt="Warm decorative lamp">
+</div>
+<div class="product-info">
+<h3>LED Photo Frame</h3>
+<p>Give your favourite memory a little glow.</p>
+<div class="product-foot">
+<span class="price">CUSTOM MADE</span>
+<button class="mini-btn" onclick="openOrder('LED Photo Frame','photo',this)">MAKE IT YOURS ↗</button>
+</div>
+</div>
+</article>
+
+<article class="product">
+<div class="product-img">
+<span class="pill">Made for them</span>
+<img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=85" alt="Decorative glowing lamp">
+</div>
+<div class="product-info">
+<h3>Photo Lamp</h3>
+<p>A sweet keepsake that lights up a room.</p>
+<div class="product-foot">
+<span class="price">CUSTOM MADE</span>
+<button class="mini-btn" onclick="openOrder('Customized Photo Lamp','photo',this)">MAKE IT YOURS ↗</button>
+</div>
+</div>
+</article>
+
+<article class="product">
+<div class="product-img">
+<span class="pill">Tiny keepsake</span>
+<img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=85" alt="Minimal jewelry and keychain style gift">
+</div>
+<div class="product-info">
+<h3>Name Keychain</h3>
+<p>A little everyday reminder, with their name.</p>
+<div class="product-foot">
+<span class="price">CUSTOM MADE</span>
+<button class="mini-btn" onclick="openOrder('Name Keychain','name',this)">MAKE IT YOURS ↗</button>
+</div>
+</div>
+</article>
+</div>
+</section>
+
+<section class="feature">
+<div class="feature-inner">
+<div class="feature-pics">
+<img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=700&q=85" alt="Wrapped present">
+<img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=600&q=85" alt="Friends celebrating together">
+</div>
+<div class="feature-copy">
+<span class="eyebrow">A GIFT, BUT MORE YOU</span>
+<h2>Little details.<br>Big happy moments.</h2>
+<p>Add a photo, a name or a tiny message. We’ll help turn it into something worth keeping.</p>
+<a class="btn" href="#shop">CREATE YOUR GIFT ↗</a>
+</div>
+</div>
+</section>
+
+<section class="section" id="how">
+<div class="section-head">
+<span class="eyebrow">SUPER SIMPLE</span>
+<h2>Three little steps</h2>
+</div>
+<div class="steps">
+<div class="step">
+<div class="step-icon">🎁</div>
+<div><h3>Pick a gift</h3><p>Choose the product you love.</p></div>
+</div>
+<div class="step">
+<div class="step-icon">📸</div>
+<div><h3>Add your touch</h3><p>Upload a photo or add a name.</p></div>
+</div>
+<div class="step">
+<div class="step-icon">💌</div>
+<div><h3>We’ll get in touch</h3><p>We confirm your design and details.</p></div>
+</div>
+</div>
+</section>
+
+<section class="about-band" id="about">
+<div class="about-inner">
+<span class="eyebrow">HELLO FROM THE LITTLE EDIT</span>
+<h2>Made for your kind of special.</h2>
+<p>We make everyday gifts feel a little more personal — one photo, one name and one happy memory at a time.</p>
+</div>
+</section>
+
+<section class="review">
+<div class="review-card">
+<div class="stars">★★★★★</div>
+<h2>Made with care, just for you.</h2>
+<p>We’re just getting started. Real customer love and reviews will be featured here as orders arrive.</p>
+</div>
+</section>
+
+<section class="contact" id="contact">
+<div class="contact-inner">
+<div>
+<h2>Need a hand? 💌</h2>
+<p>Questions about a gift? We’d love to help.</p>
+</div>
+<div class="contact-info">
+<div><b>EMAIL US</b>YOUR-EMAIL@example.com</div>
+<div><b>CALL / WHATSAPP</b>+91 XXXXX XXXXX</div>
+</div>
+</div>
+</section>
 </main>
 
-<footer>
-© 2026 The Little Edit. All Rights Reserved.
+<footer class="footer">
+<div>
+<a href="#shop">Shop</a>
+<a href="#about">About</a>
+<a href="#how">How it works</a>
+<a href="#contact">Contact</a>
+</div>
+© 2026 The Little Edit · Made with ♡
 </footer>
 
+<div class="modal" id="orderModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+<div class="panel">
+<button class="close" type="button" onclick="closeOrder()" aria-label="Close">×</button>
+<h2 id="modalTitle">Make it yours ♡</h2>
+<p class="sub">A few details and your gift request is on its way.</p>
+
+<div class="selected">
+<img id="selectedImage" src="" alt="">
+<div><strong id="selectedName"></strong><span>YOUR PERSONALIZED GIFT</span></div>
+</div>
+
+<form id="customOrderForm">
+<input type="hidden" id="customProduct">
+
+<div class="grid">
+<div class="field">
+<label for="customName">YOUR NAME *</label>
+<input id="customName" maxlength="100" required placeholder="Full name">
+</div>
+<div class="field">
+<label for="customPhone">MOBILE NUMBER *</label>
+<input id="customPhone" type="tel" pattern="[6-9][0-9]{9}" maxlength="10" required placeholder="10 digit number">
+</div>
+<div class="field full">
+<label for="customEmail">EMAIL</label>
+<input id="customEmail" type="email" placeholder="Email address">
+</div>
+<div class="field full" id="photoField">
+<label for="customImage">ADD YOUR PHOTO(S) *</label>
+<input id="customImage" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+<p class="hint">Up to 5 photos · JPG, PNG or WEBP · Max 5 MB each</p>
+</div>
+<div class="field full hidden" id="nameField">
+<label for="printName">NAME TO PRINT *</label>
+<input id="printName" maxlength="100" placeholder="Name for your keychain">
+</div>
+<div class="field full">
+<label for="customMessage">MESSAGE / DESIGN IDEA</label>
+<textarea id="customMessage" maxlength="1000" placeholder="Any special text, colour or design idea?"></textarea>
+</div>
+</div>
+
+<hr class="divider">
+<h3 style="font:600 20px 'Playfair Display';margin:0">Where should we send it?</h3>
+
+<div class="grid">
+<div class="field full">
+<label for="addressLine">FULL ADDRESS *</label>
+<textarea id="addressLine" maxlength="500" required placeholder="House / flat, street and area"></textarea>
+</div>
+<div class="field">
+<label for="city">CITY *</label>
+<input id="city" required maxlength="100">
+</div>
+<div class="field">
+<label for="state">STATE *</label>
+<input id="state" required maxlength="100">
+</div>
+<div class="field">
+<label for="pincode">PIN CODE *</label>
+<input id="pincode" pattern="[0-9]{6}" maxlength="6" required placeholder="6 digits">
+</div>
+<div class="field">
+<label for="landmark">LANDMARK</label>
+<input id="landmark" maxlength="200" placeholder="Nearby landmark">
+</div>
+</div>
+
+<button type="submit" class="btn submit" id="submitButton">SEND MY GIFT REQUEST ↗</button>
+<p class="hint">We’ll contact you to confirm design, price and delivery. No payment is taken here.</p>
+<p id="formStatus" class="status" role="status" aria-live="polite"></p>
+</form>
+</div>
+</div>
+
 <script>
-// ====================================
-// SUPABASE CONNECTION
-// ====================================
+const SUPABASE_URL="https://jnekoazooahqlzliahpc.supabase.co";
+const SUPABASE_KEY="sb_publishable_mjx0sDSTOt6KoZvshBokhw_7XVI7efM";
+const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-const SUPABASE_URL =
-"https://jnekoazooahqlzliahpc.supabase.co";
+const modal=document.getElementById("orderModal");
+let selectedType="photo";
 
-const SUPABASE_KEY =
-"sb_publishable_mjx0sDSTOt6KoZvshBokhw_7XVI7efM";
-
-const client = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-// ====================================
-// CUSTOM ORDER SUBMISSION
-// ====================================
-
-const form = document.getElementById("customOrderForm");
-
-form.addEventListener("submit", async function(event) {
-
-  event.preventDefault();
-
-  const button = document.getElementById("submitButton");
-  const status = document.getElementById("formStatus");
-
-  button.disabled = true;
-  button.textContent = "Submitting Order...";
-  status.style.color = "#555";
-  status.textContent = "Please wait, uploading your details and photos...";
-
-  try {
-
-    const name = document.getElementById("customName").value.trim();
-    const phone = document.getElementById("customPhone").value.trim();
-    const email = document.getElementById("customEmail").value.trim();
-    const product = document.getElementById("customProduct").value.trim();
-    const printName = document.getElementById("printName").value.trim();
-    const message = document.getElementById("customMessage").value.trim();
-
-    const address = document.getElementById("addressLine").value.trim();
-    const city = document.getElementById("city").value.trim();
-    const state = document.getElementById("state").value.trim();
-    const pincode = document.getElementById("pincode").value.trim();
-    const landmark = document.getElementById("landmark").value.trim();
-
-    const fileInput = document.getElementById("customImage");
-    const files = Array.from(fileInput.files);
-
-    // Validate mobile and PIN
-    if (!/^[6-9][0-9]{9}$/.test(phone)) {
-      throw new Error("Please enter a valid 10 digit mobile number.");
-    }
-
-    if (!/^[0-9]{6}$/.test(pincode)) {
-      throw new Error("Please enter a valid 6 digit PIN code.");
-    }
-
-    // Validate images
-    if (files.length > 5) {
-      throw new Error("You can upload maximum 5 images.");
-    }
-
-    for (const file of files) {
-
-      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        throw new Error("Only JPG, PNG and WEBP images are allowed.");
-      }
-
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error("Each image must be below 5 MB.");
-      }
-    }
-
-    // Unique order ID
-    const orderId = crypto.randomUUID();
-
-    // Upload customer images
-    const uploadedPaths = [];
-
-    for (const file of files) {
-
-      const safeName = file.name
-        .replace(/[^a-zA-Z0-9._-]/g, "_");
-
-      const filePath =
-        orderId + "/" + Date.now() + "-" + safeName;
-
-      const { data, error } = await client
-        .storage
-        .from("gift-uploads")
-        .upload(filePath, file, {
-          contentType: file.type,
-          upsert: false
-        });
-
-      if (error) {
-        throw new Error("Photo upload failed: " + error.message);
-      }
-
-      uploadedPaths.push(data.path);
-    }
-
-    // Save customer order
-    const { error: orderError } = await client
-      .from("custom_orders")
-      .insert({
-        order_id: orderId,
-        full_name: name,
-        phone: phone,
-        email: email || null,
-        product_name: product,
-        print_name: printName || null,
-        message: message || null,
-        address_line: address,
-        city: city,
-        state: state,
-        pincode: pincode,
-        landmark: landmark || null,
-        image_paths: uploadedPaths,
-        status: "New"
-      });
-
-    if (orderError) {
-      throw new Error("Order saving failed: " + orderError.message);
-    }
-
-    // Success
-    status.style.color = "green";
-
-    status.textContent =
-      "Your custom order has been submitted successfully! Order ID: " + orderId;
-
-    form.reset();
-
-  } catch (error) {
-
-    console.error("Custom order error:", error);
-
-    status.style.color = "red";
-    status.textContent = error.message || "Something went wrong. Please try again.";
-
-  } finally {
-
-    button.disabled = false;
-    button.textContent = "Submit Custom Order 🎁";
-
-  }
-
+document.getElementById("menuToggle").addEventListener("click",()=>{
+ document.getElementById("navLinks").classList.toggle("show");
 });
 
-</script>
+document.querySelectorAll("#navLinks a").forEach(a=>{
+ a.addEventListener("click",()=>{
+  document.getElementById("navLinks").classList.remove("show");
+ });
+});
 
+function openOrder(product,type,button){
+ selectedType=type;
+ const card=button.closest(".product");
+ const image=card.querySelector(".product-img img").src;
+
+ document.getElementById("selectedName").textContent=product;
+ document.getElementById("customProduct").value=product;
+ document.getElementById("selectedImage").src=image;
+
+ document.getElementById("photoField").classList.toggle("hidden",type!=="photo");
+ document.getElementById("nameField").classList.toggle("hidden",type!=="name");
+
+ document.getElementById("customImage").required=type==="photo";
+ document.getElementById("printName").required=type==="name";
+
+ document.getElementById("modalTitle").textContent="Customize your "+product;
+ document.getElementById("formStatus").textContent="";
+
+ modal.classList.add("open");
+ document.body.style.overflow="hidden";
+}
+
+function closeOrder(){
+ modal.classList.remove("open");
+ document.body.style.overflow="";
+}
+
+modal.addEventListener("click",e=>{
+ if(e.target===modal)closeOrder();
+});
+
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closeOrder();
+});
+
+document.getElementById("customOrderForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+
+ const button=document.getElementById("submitButton");
+ const status=document.getElementById("formStatus");
+
+ button.disabled=true;
+ button.textContent="SENDING...";
+ status.className="status";
+ status.textContent="Uploading your request...";
+
+ try{
+  const name=document.getElementById("customName").value.trim();
+  const phone=document.getElementById("customPhone").value.trim();
+  const email=document.getElementById("customEmail").value.trim();
+  const product=document.getElementById("customProduct").value.trim();
+  const printName=document.getElementById("printName").value.trim();
+  const message=document.getElementById("customMessage").value.trim();
+  const address=document.getElementById("addressLine").value.trim();
+  const city=document.getElementById("city").value.trim();
+  const state=document.getElementById("state").value.trim();
+  const pincode=document.getElementById("pincode").value.trim();
+  const landmark=document.getElementById("landmark").value.trim();
+  const files=Array.from(document.getElementById("customImage").files);
+
+  if(!/^[6-9][0-9]{9}$/.test(phone)){
+   throw Error("Enter a valid 10-digit Indian mobile number.");
+  }
+
+  if(!/^[0-9]{6}$/.test(pincode)){
+   throw Error("Enter a valid 6-digit PIN code.");
+  }
+
+  if(selectedType==="photo"&&!files.length){
+   throw Error("Please upload at least one photo for this product.");
+  }
+
+  if(selectedType==="name"&&!printName){
+   throw Error("Please enter the name to print.");
+  }
+
+  if(files.length>5){
+   throw Error("You can upload up to 5 photos.");
+  }
+
+  for(const f of files){
+   if(!["image/jpeg","image/png","image/webp"].includes(f.type)){
+    throw Error("Only JPG, PNG and WEBP images are allowed.");
+   }
+   if(f.size>5*1024*1024){
+    throw Error("Each image must be under 5 MB.");
+   }
+  }
+
+  const orderId=crypto.randomUUID();
+  const paths=[];
+
+  for(const f of files){
+   const safe=f.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+   const path=orderId+"/"+Date.now()+"-"+safe;
+
+   const {data,error}=await client.storage
+    .from("gift-uploads")
+    .upload(path,f,{contentType:f.type,upsert:false});
+
+   if(error)throw Error("Photo upload failed: "+error.message);
+   paths.push(data.path);
+  }
+
+  const {error}=await client.from("custom_orders").insert({
+   order_id:orderId,
+   full_name:name,
+   phone,
+   email:email||null,
+   product_name:product,
+   print_name:printName||null,
+   message:message||null,
+   address_line:address,
+   city,
+   state,
+   pincode,
+   landmark:landmark||null,
+   image_paths:paths,
+   status:"New"
+  });
+
+  if(error)throw Error("Order saving failed: "+error.message);
+
+  status.className="status success";
+  status.textContent="Request sent! Your reference is "+orderId+". We’ll be in touch.";
+  e.target.reset();
+
+ }catch(err){
+  console.error(err);
+  status.className="status error";
+  status.textContent=err.message||"Something went wrong. Please try again.";
+ }finally{
+  button.disabled=false;
+  button.textContent="SEND MY GIFT REQUEST ↗";
+ }
+});
+</script>
 </body>
 </html>
